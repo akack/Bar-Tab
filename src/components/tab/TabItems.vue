@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, toRaw } from 'vue';
+import { computed } from 'vue';
 import { useOrderStore } from '../../stores/orderStore';
 import { useTabStore } from '../../stores/tabStore';
 import { currency } from '../../utils/currency';

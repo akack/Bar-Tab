@@ -11,8 +11,8 @@
       <div class="md:w-auto">
         <Bill />
         <BarTabButton @click="submitOrder" :label="'Place Order'" />
-        <ExportButton format="CSV" v-if="tabStore.total" />
-        <ExportButton format="PDF" v-if="tabStore.total" />
+        <BarTabButton :label="'Export CSV'" v-if="tabStore.total" @click="exportToCSV(tabStore.orders)" />
+        <BarTabButton :label="'Export PDF'" v-if="tabStore.total" @click="exportToPDF(tabStore.orders)" />
       </div>
     </div>
     <hr class="my-4 divider-y" />
@@ -26,13 +26,13 @@
 import BeverageList from '../beverage/BeverageList.vue';
 import OrderSummary from './OrderSummary.vue';
 import Bill from '../bill/Bill.vue';
-import ExportButton from '../ExportButton.vue';
 import { useOrderStore } from '../../stores/orderStore';
 import { useTabStore } from '../../stores/tabStore';
 import { computed, ref } from 'vue';
 import TabItems from '../tab/TabItems.vue';
 import BarTabButton from '../BarTabButton.vue';
 import * as _ from 'lodash';
+import { exportToCSV, exportToPDF } from '../../utils/billReceipt';
 
 const orderStore = useOrderStore();
 const tabStore = useTabStore();

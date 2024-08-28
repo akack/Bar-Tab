@@ -2,9 +2,7 @@ import { jsPDF } from 'jspdf';
 import { currency } from './currency';
 import { useOrderStore } from '@/stores/orderStore';
 
-export function exportToCSV(order: any) {
-  const orderState = useOrderStore();
-  const header = ['Beverage', 'Quantity', 'Price per Unit', 'Total'];
+const createRowsForExport = (order: any) => {
   const rows: any = [];
   let total = 0;
   Object.keys(order).forEach((key) => {
@@ -21,8 +19,17 @@ export function exportToCSV(order: any) {
     });
   });
 
+  return { rows, total };
+};
+
+export const exportToCSV = (order: any) => {
+  const orderState = useOrderStore();
+  const header = ['Beverage', 'Quantity', 'Price per Unit', 'Total'];
+
+  const { rows, total } = createRowsForExport(order);
+
   rows.push(['Total', '', '', `${currency(total)}`]);
-  rows.push(['No of Peopls', '', '', `${orderState.bill.noOfPeople}`]);
+  rows.push(['No of People', '', '', `${orderState.bill.noOfPeople}`]);
   rows.push(['Amount Per Person', '', '', `${currency(total / orderState.bill.noOfPeople)}`]);
 
   const csvContent = [header, ...rows].map((row) => row.join(',')).join('\n');
@@ -35,9 +42,9 @@ export function exportToCSV(order: any) {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-}
+};
 
-export function exportToPDF(order: any) {
+export const exportToPDF = (order: any) => {
   const doc = new jsPDF();
 
   doc.setFontSize(12);
@@ -45,22 +52,8 @@ export function exportToPDF(order: any) {
   const orderState = useOrderStore();
 
   const headers = ['Beverage', 'Quantity', 'Price per Unit', 'Total'];
-  const rows: any = [];
 
-  let total = 0;
-  Object.keys(order).forEach((key) => {
-    const o = order[key] as any;
-    Object.values(o).map((item: any) => {
-      const tableRow = [
-        item.name,
-        item.quantity.toString(),
-        `${currency(item.price)}`,
-        `${currency(item.quantity * item.price)}`,
-      ];
-      total += item.quantity * item.price;
-      rows.push(tableRow);
-    });
-  });
+  const { rows, total } = createRowsForExport(order);
 
   let y = 20;
   headers.forEach((header, i) => {
@@ -80,4 +73,4 @@ export function exportToPDF(order: any) {
   doc.text(`Amount per Person: ${currency(total / orderState.bill.noOfPeople)}`, 10, y + 20);
 
   doc.save('order.pdf');
-}
+};
