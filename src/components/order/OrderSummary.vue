@@ -6,19 +6,18 @@
         <OrderItem :item="item" :key="item.id" />
       </li>
     </ul>
-    <h3 class="mt-2 text-cyan-700">
-      <span class="font-bold text-black">Total:</span> {{ currency(total) }}
-    </h3>
+    <h3 class="mt-2 text-cyan-700"><span class="font-bold text-black">Total:</span> {{ currency(total) }}</h3>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useOrderStore } from '../../stores/orderStore'
-import { computed } from 'vue'
-import { currency } from '../../utils/currency'
-import OrderItem from './OrderItem.vue'
-const orderStore = useOrderStore()
+import { useOrderStore } from '../../stores/orderStore';
+import { computed } from 'vue';
+import { currency } from '../../utils/currency';
+import OrderItem from './OrderItem.vue';
 
-const orderItems = computed(() => orderStore.order)
-const total = computed(() => orderStore.total)
+const orderStore = useOrderStore();
+
+const orderItems = computed(() => orderStore.order);
+const total = computed(() => orderStore.total);
 </script>

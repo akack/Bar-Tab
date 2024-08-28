@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import OrderView from '../components/order/OrderView.vue'
+import OrderView from '@/components/order/OrderView.vue';
 </script>
 
 <template>
