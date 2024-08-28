@@ -6,7 +6,7 @@
     </div>
     <div class="w-20">
       <input
-        class="w-20 border p-2"
+        class="w-20 border p-2 text-center"
         type="number"
         v-model.number="quantity"
         min="0"

@@ -24,7 +24,9 @@ This is a simple web app that allows users to order beverages, split the bill, a
 1. Select the quantity of beverages you want to order.
 2. Optionally, enter the number of people to split the bill.
 3. View your order summary and the total cost.
-4. Export your order as CSV or PDF.
+4. Submit the order
+5. After submitting the order Customer tab will show (you can add more order if you want)
+6. Export your order as CSV or PDF.
 
 ## Components
 

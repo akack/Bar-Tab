@@ -14,12 +14,7 @@
         <label>Split bill:</label>
         <p class="text-xs">Number of people to split with:</p>
       </div>
-      <input
-        class="border w-20 text-center p-2"
-        type="number"
-        v-model.number="peopleCount"
-        min="1"
-      />
+      <input class="border w-20 text-center p-2" type="number" v-model.number="peopleCount" min="1" />
     </div>
 
     <div class="flex mt-2">
@@ -32,30 +27,30 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue'
-import { computed, ref } from 'vue'
-import { useOrderStore } from '../../stores/orderStore'
-import { currency } from '../../utils/currency'
+import { watch } from 'vue';
+import { computed, ref } from 'vue';
+import { useOrderStore } from '../../stores/orderStore';
+import { useTabStore } from '../../stores/tabStore';
+import { currency } from '../../utils/currency';
 
-const peopleCount = ref(1)
-const orderStore = useOrderStore()
-const total = computed(() => orderStore.total)
+const peopleCount = ref(1);
+const orderStore = useOrderStore();
+const tabStore = useTabStore();
+const total = computed(() => tabStore.total);
 
 watch(peopleCount, (newValue) => {
   orderStore.bill = {
     noOfPeople: newValue,
-    amountPerPerson: currency(parseFloat(total.value.toString()) / peopleCount.value)
-  } as any
-})
+    amountPerPerson: currency(parseFloat(total.value.toString()) / peopleCount.value),
+  } as any;
+});
 
 watch(orderStore.order, () => {
   orderStore.bill = {
     noOfPeople: peopleCount.value,
-    amountPerPerson: currency(parseFloat(total.value.toString()) / peopleCount.value)
-  } as any
-})
+    amountPerPerson: currency(parseFloat(total.value.toString()) / peopleCount.value),
+  } as any;
+});
 
-const totalPerPerson = computed(() =>
-  (parseFloat(total.value.toString()) / peopleCount.value).toFixed(2)
-)
+const totalPerPerson = computed(() => (parseFloat(total.value.toString()) / peopleCount.value).toFixed(2));
 </script>
