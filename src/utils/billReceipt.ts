@@ -6,27 +6,30 @@ interface Item {
   name: string;
   quantity: number;
   price: number;
+  total: number;
 }
 
 const groupItemsByName = (data: string[][]): string[][] => {
   const itemMap = new Map<string, Item>();
 
-  for (const [name, quantityStr, totalStr] of data) {
+  for (const [name, quantityStr, priceStr, totalStr] of data) {
     const quantity = parseInt(quantityStr, 10);
-    const price = parseFloat(totalStr.replace(/[^0-9.-]+/g, ''));
+    const price = parseFloat(priceStr.replace(/[^0-9.-]+/g, ''));
+    const total = parseFloat(totalStr.replace(/[^0-9.-]+/g, ''));
 
     const existingItem = itemMap.get(name);
     if (existingItem) {
       existingItem.quantity += quantity;
+      existingItem.total += total;
     } else {
-      itemMap.set(name, { name, quantity, price });
+      itemMap.set(name, { name, quantity, price, total });
     }
   }
 
   const groupedItems: string[][] = [];
 
-  for (const { name, quantity, price } of itemMap.values()) {
-    groupedItems.push([name, quantity.toString(), ` ${currency(price)}`]);
+  for (const { name, quantity, price, total } of itemMap.values()) {
+    groupedItems.push([name, quantity.toString(), ` ${currency(price)}`, `${currency(total)}`]);
   }
 
   return groupedItems;
@@ -38,12 +41,7 @@ const generateRows = (order: any) => {
   Object.keys(order).forEach((key) => {
     const o = order[key] as any;
     Object.values(o).map((item: any) => {
-      const tableRow = [
-        item.name,
-        item.quantity.toString(),
-        `${item.price}`,
-        `${currency(item.quantity * item.price)}`,
-      ];
+      const tableRow = [item.name, item.quantity.toString(), `${item.price}`, `${item.quantity * item.price}`];
       total += item.quantity * item.price;
       rows.push(tableRow);
     });
