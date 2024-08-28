@@ -2,7 +2,37 @@ import { jsPDF } from 'jspdf';
 import { currency } from './currency';
 import { useOrderStore } from '@/stores/orderStore';
 
-const createRowsForExport = (order: any) => {
+interface Item {
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+const groupItemsByName = (data: string[][]): string[][] => {
+  const itemMap = new Map<string, Item>();
+
+  for (const [name, quantityStr, totalStr] of data) {
+    const quantity = parseInt(quantityStr, 10);
+    const price = parseFloat(totalStr.replace(/[^0-9.-]+/g, ''));
+
+    const existingItem = itemMap.get(name);
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      itemMap.set(name, { name, quantity, price });
+    }
+  }
+
+  const groupedItems: string[][] = [];
+
+  for (const { name, quantity, price } of itemMap.values()) {
+    groupedItems.push([name, quantity.toString(), ` ${currency(price)}`]);
+  }
+
+  return groupedItems;
+};
+
+const generateRows = (order: any) => {
   const rows: any = [];
   let total = 0;
   Object.keys(order).forEach((key) => {
@@ -11,7 +41,7 @@ const createRowsForExport = (order: any) => {
       const tableRow = [
         item.name,
         item.quantity.toString(),
-        `${currency(item.price)}`,
+        `${item.price}`,
         `${currency(item.quantity * item.price)}`,
       ];
       total += item.quantity * item.price;
@@ -26,13 +56,14 @@ export const exportToCSV = (order: any) => {
   const orderState = useOrderStore();
   const header = ['Beverage', 'Quantity', 'Price per Unit', 'Total'];
 
-  const { rows, total } = createRowsForExport(order);
+  const { rows, total } = generateRows(order);
+  const finalRows = groupItemsByName(rows);
 
-  rows.push(['Total', '', '', `${currency(total)}`]);
-  rows.push(['No of People', '', '', `${orderState.bill.noOfPeople}`]);
-  rows.push(['Amount Per Person', '', '', `${currency(total / orderState.bill.noOfPeople)}`]);
+  finalRows.push(['Total', '', '', `${currency(total)}`]);
+  finalRows.push(['No of People', '', '', `${orderState.bill.noOfPeople}`]);
+  finalRows.push(['Amount Per Person', '', '', `${currency(total / orderState.bill.noOfPeople)}`]);
 
-  const csvContent = [header, ...rows].map((row) => row.join(',')).join('\n');
+  const csvContent = [header, ...finalRows].map((row) => row.join(',')).join('\n');
 
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
@@ -53,7 +84,8 @@ export const exportToPDF = (order: any) => {
 
   const headers = ['Beverage', 'Quantity', 'Price per Unit', 'Total'];
 
-  const { rows, total } = createRowsForExport(order);
+  const { rows, total } = generateRows(order);
+  const finalRows = groupItemsByName(rows);
 
   let y = 20;
   headers.forEach((header, i) => {
@@ -61,7 +93,7 @@ export const exportToPDF = (order: any) => {
   });
 
   y += 10;
-  rows.forEach((row: any) => {
+  finalRows.forEach((row: any) => {
     row.forEach((cell: any, i: any) => {
       doc.text(cell, 10 + i * 40, y);
     });
