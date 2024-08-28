@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1 class="font-bold text-cyan-700 text-2xl underline text-center">PLACE YOUR ORDER NOW</h1>
+    <p class="text-red-500 text-center" v-if="errorMessage">{{ errorMessage }}</p>
     <hr class="my-4 divider-y" />
     <div class="flex flex-wrap justify-center gap-8">
       <div class="md:w-auto">
@@ -31,18 +32,25 @@ import { useTabStore } from '../../stores/tabStore';
 import { computed, ref } from 'vue';
 import TabItems from '../tab/TabItems.vue';
 import BarTabButton from '../BarTabButton.vue';
+import * as _ from 'lodash';
 
 const orderStore = useOrderStore();
 const tabStore = useTabStore();
 
-const total = computed(() => orderStore.total);
 let tabTotal = ref(0);
 
 const orders = computed(() => tabStore.orders);
 
+const errorMessage = ref('');
+
 const submitOrder = () => {
-  tabStore.addOrder(orderStore.order);
-  tabTotal.value = tabStore.total as any;
-  orderStore.order = {};
+  errorMessage.value = '';
+  if (_.isEmpty(orderStore.order)) {
+    errorMessage.value = 'Please select beverages to place an order.';
+  } else {
+    tabStore.addOrder(orderStore.order);
+    tabTotal.value = tabStore.total as any;
+    orderStore.order = {};
+  }
 };
 </script>
