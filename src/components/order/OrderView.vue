@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="font-bold text-cyan-700 text-2xl underline text-center">PLACE YOUR ORDER NOW</h1>
-    <p class="text-red-500 text-center" v-if="errorMessage">{{ errorMessage }}</p>
+    <p class="text-red-500 text-center text-sm" v-if="errorMessage">{{ errorMessage }}</p>
     <hr class="my-4 divider-y" />
     <div class="flex flex-wrap justify-center gap-8">
       <div class="md:w-auto">
@@ -46,7 +46,7 @@ const errorMessage = ref('');
 const submitOrder = () => {
   errorMessage.value = '';
   if (_.isEmpty(orderStore.order)) {
-    errorMessage.value = 'Please select beverages to place an order.';
+    errorMessage.value = 'Please select beverages before placing an order.';
   } else {
     tabStore.addOrder(orderStore.order);
     tabTotal.value = tabStore.total as any;
