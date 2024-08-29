@@ -1,7 +1,7 @@
 <template>
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg w-[100%] sm:w-[500px] md:w-[600px] xl:w-[700px] p-2">
     <h2 class="underline text-cyan-700 font-bold mb-4 text-2xl">Customer Open Tab</h2>
-    <p class="text-sm text-gray-600" v-if="!orders.length">No active tab for the customer</p>
+    <p class="text-sm text-gray-600" v-if="!orders?.length">No active tab for the customer</p>
     <div v-else>
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
@@ -14,10 +14,10 @@
         <tbody>
           <tr
             class="odd:bg-white even:bg-gray-50 even:dark:bg-gray-200 border-b dark:border-gray-200"
-            v-for="order in tabOrders"
+            v-for="(order, index) in tabOrders"
             :key="order.id"
           >
-            <td class="px-6 py-3">{{ getOrderId(order) }}</td>
+            <td class="px-6 py-3">{{ index + 1 }}</td>
             <td class="px-6 py-3">{{ getQuantity(order) }}</td>
             <td class="px-6 py-3">{{ currency(calculateTotals(order)) }}</td>
           </tr>
@@ -39,7 +39,7 @@ import { useOrderStore } from '../../stores/orderStore';
 import { useTabStore } from '../../stores/tabStore';
 import { currency } from '../../utils/currency';
 import BarTabButton from '../BarTabButton.vue';
-import { calculateTotals, getOrderId, getQuantity } from '../../utils/utils';
+import { calculateTotals, getQuantity } from '../../utils/utils';
 
 const orderStore = useOrderStore();
 const tabStore = useTabStore();
