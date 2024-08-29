@@ -40,3 +40,11 @@ This is a simple web app that allows users to order beverages, split the bill, a
 
 - This application does not include a persistence layer.
 - The app is designed to be lightweight and simple for demonstration purposes.
+
+## Screen Shots
+
+![alt text](image-1.png)
+
+![alt text](image.png)
+
+![alt text](image-2.png)
