@@ -39,6 +39,7 @@ import { useOrderStore } from '../../stores/orderStore';
 import { useTabStore } from '../../stores/tabStore';
 import { currency } from '../../utils/currency';
 import BarTabButton from '../BarTabButton.vue';
+import { calculateTotals, getOrderId, getQuantity } from '../../utils/utils';
 
 const orderStore = useOrderStore();
 const tabStore = useTabStore();
@@ -47,48 +48,6 @@ const props = defineProps({
   orders: Array,
   total: String,
 });
-
-const calculateTotals = (data: any) => {
-  let totalSum = 0;
-
-  for (const key in data) {
-    // eslint-disable-next-line no-prototype-builtins
-    if (data.hasOwnProperty(key)) {
-      const item = data[key];
-      totalSum += item.price * item.quantity;
-    }
-  }
-
-  return totalSum;
-};
-
-const getQuantity = (data: any) => {
-  let quantity = 0;
-
-  for (const key in data) {
-    // eslint-disable-next-line no-prototype-builtins
-    if (data.hasOwnProperty(key)) {
-      const item = data[key];
-      quantity += item.quantity;
-    }
-  }
-
-  return quantity;
-};
-
-const getOrderId = (data: any) => {
-  let id = 0;
-
-  for (const key in data) {
-    // eslint-disable-next-line no-prototype-builtins
-    if (data.hasOwnProperty(key)) {
-      const item = data[key];
-      id = item.id;
-    }
-  }
-
-  return id;
-};
 
 const tabOrders = computed(() => props.orders);
 
