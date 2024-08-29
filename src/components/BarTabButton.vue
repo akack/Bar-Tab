@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 defineProps<{
-  isLoading: boolean;
+  isLoading?: boolean;
   label: string;
 }>();
 </script>
